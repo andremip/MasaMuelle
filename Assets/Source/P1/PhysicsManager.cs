@@ -167,9 +167,8 @@ public class PhysicsManager : MonoBehaviour
         }
 
         // TimeStep: symplectic euler
-        x += TimeStep * v;
         v += TimeStep * (Minv * f);
-
+        x += TimeStep * v;
 
         // Store the new values
         foreach (ISimulable obj in m_objs)
