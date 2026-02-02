@@ -183,7 +183,62 @@ public class PhysicsManager : MonoBehaviour
     /// </summary>
     private void stepMidpoint()
     {
-        // TO BE COMPLETED //
+        VectorXD x = new DenseVectorXD(m_numDoFs);
+        VectorXD v = new DenseVectorXD(m_numDoFs);
+        VectorXD xMidPoint = new DenseVectorXD(m_numDoFs);
+        VectorXD vMidPoint = new DenseVectorXD(m_numDoFs);
+        VectorXD f = new DenseVectorXD(m_numDoFs);
+        f.Clear();
+        MatrixXD Minv = new DenseMatrixXD(m_numDoFs);   // Inverse of the mass
+        Minv.Clear();
+
+        foreach (ISimulable obj in m_objs)
+        {
+            obj.GetPosition(x);
+            obj.GetVelocity(v);
+            obj.GetForce(f);
+            obj.GetMassInverse(Minv);
+        }
+
+        foreach (ISimulable obj in m_objs)
+        {
+            obj.FixVector(f);
+            obj.FixMatrix(Minv);
+        }
+
+        // Midpoint 1st step
+        vMidPoint = v + (Minv * f) * TimeStep / 2;
+        xMidPoint = x +  v * TimeStep / 2;
+
+        foreach (ISimulable obj in m_objs)
+        {
+            obj.SetPosition(x);
+            obj.SetVelocity(v);
+        }
+
+        // Now the 2nd step
+        foreach (ISimulable obj in m_objs)
+        {
+            obj.GetPosition(x);
+            obj.GetVelocity(v);
+            obj.GetForce(f);
+            obj.GetMassInverse(Minv);
+        }
+
+        foreach (ISimulable obj in m_objs)
+        {
+            obj.FixVector(f);
+            obj.FixMatrix(Minv);
+        }
+
+        v += (Minv * f) * TimeStep;
+        x += vMidPoint * TimeStep;
+
+        foreach (ISimulable obj in m_objs)
+        {
+            obj.SetPosition(x);
+            obj.SetVelocity(v);
+        }
     }
 
     /// <summary>

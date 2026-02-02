@@ -1495,7 +1495,7 @@ MonoBehaviour:
   Gravity: {x: 0, y: -9.81, z: 0}
   SimObjects:
   - {fileID: 2125075984}
-  IntegrationMethod: 0
+  IntegrationMethod: 2
 --- !u!4 &2069922279
 Transform:
   m_ObjectHideFlags: 0
