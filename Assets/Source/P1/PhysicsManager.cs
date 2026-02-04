@@ -207,20 +207,22 @@ public class PhysicsManager : MonoBehaviour
         }
 
         // Midpoint 1st step
-        vMidPoint = v + (Minv * f) * TimeStep / 2;
-        xMidPoint = x +  v * TimeStep / 2;
+        xMidPoint = x + v * TimeStep / 2;
+        vMidPoint = v + (Minv * f) * TimeStep / 2;        
 
+        // Use the x and v of the midpoint
         foreach (ISimulable obj in m_objs)
         {
-            obj.SetPosition(x);
-            obj.SetVelocity(v);
+            obj.SetPosition(xMidPoint);
+            obj.SetVelocity(vMidPoint);
         }
+
+        f.Clear();
+        Minv.Clear();
 
         // Now the 2nd step
         foreach (ISimulable obj in m_objs)
         {
-            obj.GetPosition(x);
-            obj.GetVelocity(v);
             obj.GetForce(f);
             obj.GetMassInverse(Minv);
         }
@@ -231,8 +233,8 @@ public class PhysicsManager : MonoBehaviour
             obj.FixMatrix(Minv);
         }
 
-        v += (Minv * f) * TimeStep;
         x += vMidPoint * TimeStep;
+        v += (Minv * f) * TimeStep;
 
         foreach (ISimulable obj in m_objs)
         {
