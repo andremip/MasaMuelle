@@ -50,6 +50,9 @@ public class PhysicsManager : MonoBehaviour
     #region OtherVariables
     private List<ISimulable> m_objs;
     private int m_numDoFs;
+    private bool verletInit = true;
+    VectorXD x_prev;
+
     #endregion
 
     #region MonoBehaviour
@@ -243,12 +246,83 @@ public class PhysicsManager : MonoBehaviour
         }
     }
 
+    private void verletInitFunc(VectorXD x, VectorXD v, VectorXD f, MatrixXD Minv)
+    {
+        foreach (ISimulable obj in m_objs)
+        {
+            obj.GetPosition(x);
+            obj.GetVelocity(v);
+            obj.GetForce(f);
+            obj.GetMassInverse(Minv);
+        }
+
+        // Fix the nodes that dont move
+        foreach (ISimulable obj in m_objs)
+        {
+            obj.FixVector(f);
+            obj.FixMatrix(Minv);
+        }
+
+        VectorXD x_firstH = new DenseVectorXD(m_numDoFs);
+        x_firstH = x + v * TimeStep + 0.5 * (Minv * f) * TimeStep * TimeStep;
+
+        x_prev = new DenseVectorXD(m_numDoFs);
+        x_prev = x;
+
+        // Store the new values
+        foreach (ISimulable obj in m_objs)
+        {
+            obj.SetPosition(x_firstH);
+            obj.SetVelocity(v);
+        }
+    }
+    
     /// <summary>
     /// Performs a simulation step using Verlet integration.
     /// </summary>
     private void stepVerlet()
     {
-        // TO BE COMPLETED //
+        VectorXD x = new DenseVectorXD(m_numDoFs);
+        VectorXD x_aux = new DenseVectorXD(m_numDoFs);
+        VectorXD v = new DenseVectorXD(m_numDoFs);
+        VectorXD f = new DenseVectorXD(m_numDoFs);
+        f.Clear();
+        MatrixXD Minv = new DenseMatrixXD(m_numDoFs);   // Inverse of the mass
+        Minv.Clear();
+
+        // Initialize verlet assuming constant acceleration
+        if (verletInit)
+        {
+            verletInitFunc(x, v, f, Minv);
+            verletInit = false;
+        }
+
+        foreach (ISimulable obj in m_objs)
+        {
+            obj.GetPosition(x);
+            obj.GetVelocity(v);
+            obj.GetForce(f);
+            obj.GetMassInverse(Minv);
+        }
+
+        // Fix the nodes that dont move
+        foreach (ISimulable obj in m_objs)
+        {
+            obj.FixVector(f);
+            obj.FixMatrix(Minv);
+        }
+
+        x_aux = x;
+        x = 2.0 * x - x_prev + (Minv * f) * TimeStep * TimeStep;
+        x_prev = x_aux;
+
+        v = (x - x_prev) / (2.0 * TimeStep);
+
+        foreach (ISimulable obj in m_objs)
+        {
+            obj.SetPosition(x);
+            obj.SetVelocity(v);
+        }
     }
 
     /// <summary>
