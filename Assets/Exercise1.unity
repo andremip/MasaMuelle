@@ -1491,7 +1491,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Paused: 0
-  TimeStep: 0.1
+  TimeStep: 0.01
   Gravity: {x: 0, y: -9.81, z: 0}
   SimObjects:
   - {fileID: 2125075984}
