@@ -1491,11 +1491,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Paused: 0
-  TimeStep: 0.01
+  TimeStep: 0.1
   Gravity: {x: 0, y: -9.81, z: 0}
   SimObjects:
   - {fileID: 2125075984}
-  IntegrationMethod: 3
+  IntegrationMethod: 4
 --- !u!4 &2069922279
 Transform:
   m_ObjectHideFlags: 0
@@ -1544,9 +1544,9 @@ Transform:
   m_Children:
   - {fileID: 1391479821}
   - {fileID: 986859845}
-  - {fileID: 1633132271}
   - {fileID: 1517380583}
   - {fileID: 150406132}
+  - {fileID: 1633132271}
   - {fileID: 451081242}
   - {fileID: 1667558161}
   - {fileID: 519669163}

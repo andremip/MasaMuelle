@@ -97,13 +97,13 @@ public class MassSpring : MonoBehaviour, ISimulable
             Springs[i].GetForce(force);
     }
 
-    public void GetForceJacobian(MatrixXD dFdx)
+    public void GetForceJacobian(MatrixXD dFdx, MatrixXD dFdv)
     {
         for (int i = 0; i < Nodes.Count; ++i)
-            Nodes[i].GetForceJacobian(dFdx);
+            Nodes[i].GetForceJacobian(dFdx, dFdv);
 
         for (int i = 0; i < Springs.Count; ++i)
-            Springs[i].GetForceJacobian(dFdx);
+            Springs[i].GetForceJacobian(dFdx, dFdv);
     }
 
     public void GetMass(MatrixXD mass)

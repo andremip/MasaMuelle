@@ -330,50 +330,7 @@ public class PhysicsManager : MonoBehaviour
     /// </summary>
     private void stepImplicit()
     {
-        VectorXD x = new DenseVectorXD(m_numDoFs);
-        VectorXD v = new DenseVectorXD(m_numDoFs);
-        VectorXD f = new DenseVectorXD(m_numDoFs);
-        f.Clear();
-        MatrixXD M = new DenseMatrixXD(m_numDoFs);
-        M.Clear();
-        MatrixXD dFdx = new DenseMatrixXD(m_numDoFs);
-        dFdx.Clear();
-        MatrixXD dFdv = new DenseMatrixXD(m_numDoFs);
-        dFdv.Clear();
-
-        foreach (ISimulable obj in m_objs)
-        {
-            obj.GetPosition(x);
-            obj.GetVelocity(v);
-            obj.GetForce(f);
-            obj.GetMass(M);
-            obj.GetForceJacobian(dFdx, dFdv);
-        }
-
-        // A part of the equation
-        //MatrixXD A = M - TimeStep * TimeStep * dFdx;
-        MatrixXD A = M  - TimeStep * dFdv - TimeStep * TimeStep * dFdx;
-
-        // b part of the equation
-        //VectorXD b = M * v + TimeStep * f;
-        VectorXD b = M * v + TimeStep * f - TimeStep * dFdv * v;
-
-        foreach (ISimulable obj in m_objs)
-        {
-            obj.FixMatrix(A);
-            obj.FixVector(b);
-        }
-
-        // Solve A*v(t+h) = b
-        v = A.Solve(b); // Using MatrixXd::Solve()
-        // x(t+h) = x(t) + h*v(t+h)
-        x += TimeStep * v;
-
-        foreach (ISimulable obj in m_objs)
-        {
-            obj.SetPosition(x);
-            obj.SetVelocity(v);
-        }
+        // TO BE COMPLETED //
     }
 
 }

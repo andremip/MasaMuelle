@@ -50,7 +50,7 @@ public interface ISimulable
     /// <summary>
     /// Write force jacobian values into the matrix.
     /// </summary>
-    void GetForceJacobian(MatrixXD dFdx);
+    void GetForceJacobian(MatrixXD dFdx, MatrixXD dFdv);
 
     /// <summary>
     /// Write mass values into the mass matrix.

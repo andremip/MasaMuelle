@@ -6,7 +6,6 @@ using VectorXD = MathNet.Numerics.LinearAlgebra.Vector<double>;
 using MatrixXD = MathNet.Numerics.LinearAlgebra.Matrix<double>;
 using DenseVectorXD = MathNet.Numerics.LinearAlgebra.Double.DenseVector;
 using DenseMatrixXD = MathNet.Numerics.LinearAlgebra.Double.DenseMatrix;
-using MathNet.Numerics;
 
 public class Spring : MonoBehaviour {
 
@@ -15,8 +14,6 @@ public class Spring : MonoBehaviour {
     public float Stiffness;
     public Node nodeA;
     public Node nodeB;
-    // Same damping for each spring because i dont want to change it in the editor
-    private float Damping = 1.0f;
 
     #endregion
 
@@ -66,48 +63,9 @@ public class Spring : MonoBehaviour {
     }
 
     // Get Force Jacobian
-    public void GetForceJacobian(MatrixXD dFdx, MatrixXD dFdv)
+    public void GetForceJacobian(MatrixXD dFdx)
     {
         // TO BE COMPLETED //
-        Vector3 u = (nodeA.Pos - nodeB.Pos) / Length;
-
-        DenseMatrixXD uut = new DenseMatrixXD(3, 3);
-
-        // Fill the u*ut 3x3 matrix
-        for (int i = 0; i < 3; i++)
-        {
-            for(int j = 0; j < 3; j++)
-            {
-                uut[i, j] = u[i] * u[j];
-            }
-        }
-
-        DenseMatrixXD identity = DenseMatrixXD.CreateIdentity(3);
-
-        // Formula 
-        DenseMatrixXD dFAdxA = -Stiffness * (Length - Length0) / Length * (identity - uut) - Stiffness * uut;
-        AddJacobian(dFdx, nodeA.index, nodeA.index, dFAdxA);
-        AddJacobian(dFdx, nodeA.index, nodeB.index, -dFAdxA);
-        AddJacobian(dFdx, nodeB.index, nodeB.index, dFAdxA);
-        AddJacobian(dFdx, nodeB.index, nodeA.index, -dFAdxA);
-
-        DenseMatrixXD dFAdvA = -Damping * uut;
-        AddJacobian(dFdv, nodeA.index, nodeA.index, dFAdvA);
-        AddJacobian(dFdv, nodeA.index, nodeB.index, -dFAdvA);
-        AddJacobian(dFdv, nodeB.index, nodeB.index, dFAdvA);
-        AddJacobian(dFdv, nodeB.index, nodeA.index, -dFAdvA);
     }
 
-    private void AddJacobian(MatrixXD dFd_, int indexA, int indexB, MatrixXD dFSd_S)
-    {
-        // "Derivada de la fuerza 'a' respecto a 'xa'" como apunté en clase
-        for (int i = 0; i < 3; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
-                // add the derivative
-                dFd_[indexA + i, indexB + j] += dFSd_S[i, j];
-            }
-        }
-    }
 }

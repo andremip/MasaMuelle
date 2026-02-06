@@ -70,7 +70,7 @@ public class Node : MonoBehaviour {
     }
 
     // Get Force Jacobian
-    public void GetForceJacobian(MatrixXD dFdx, MatrixXD dFdv)
+    public void GetForceJacobian(MatrixXD dFdx)
     {
         // TO BE COMPLETED //
     }
